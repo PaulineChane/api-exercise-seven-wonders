@@ -3,12 +3,15 @@
 # API Seven Wonders Activity
 # 10/06/2020
 # frozen_string_literal: true
-
+require 'dotenv'
 require 'httparty'
 require 'awesome_print'
 
+# load .env file
+Dotenv.load
+
 BASE_URL = 'https://us1.locationiq.com/v1/'
-LOCATION_IQ_KEY = 'pk.8a584f92c91c63cfec4b08e5b37557ab' # TOKEN REVOKED
+LOCATION_IQ_KEY = ENV['LOCATION_IQ_KEY'] # TOKEN REVOKED
 
 def get_location(search_term)
   # change url
@@ -51,6 +54,7 @@ end
 # Turn these locations into the names of places: [{ lat: 38.8976998, lon: -77.0365534886228}, {lat: 48.4283182, lon: -123.3649533 }, { lat: 41.8902614, lon: 12.493087103595503}]
 # make a helper function
 def reverse_location(lat, lon)
+  query_param = {}
   path = "reverse.php?key=#{LOCATION_IQ_KEY}&lat=#{lat}&lon=#{lon}&format=json"
   response = HTTParty.get(BASE_URL + path)
 
