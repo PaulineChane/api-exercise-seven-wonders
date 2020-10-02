@@ -8,7 +8,7 @@ require 'httparty'
 require 'awesome_print'
 
 BASE_URL = 'https://us1.locationiq.com/v1/'
-LOCATION_IQ_KEY = 'pk.8a584f92c91c63cfec4b08e5b37557ab' # switched to a public token to be safe
+LOCATION_IQ_KEY = 'pk.8a584f92c91c63cfec4b08e5b37557ab' # TOKEN REVOKED
 
 def get_location(search_term)
   # change url
