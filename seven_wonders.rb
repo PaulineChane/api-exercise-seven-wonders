@@ -11,13 +11,16 @@ require 'awesome_print'
 Dotenv.load
 
 BASE_URL = 'https://us1.locationiq.com/v1/'
-LOCATION_IQ_KEY = ENV['LOCATION_IQ_KEY'] # TOKEN REVOKED
+LOCATION_IQ_KEY = ENV['LOCATION_IQ_KEY']
 
 def get_location(search_term)
   # change url
-  path = "search.php?key=#{LOCATION_IQ_KEY}&q=#{search_term}&format=json"
+  task = "search.php"
+  query = {key: LOCATION_IQ_KEY,
+           q: search_term,
+           format: "json"}
   # get response
-  response = HTTParty.get(BASE_URL + path)[0]
+  response = HTTParty.get(BASE_URL + task, query: query)[0]
 
   { search_term => { lat: response['lat'], lon: response['lon'] } }
 end
@@ -45,18 +48,26 @@ def drive_to_wonder(location, wonder)
   # collect coordinates into string
   coordinates = "#{location_coord[location][:lat]},#{location_coord[location][:lon]};#{wonder_coord[wonder][:lat]},#{wonder_coord[wonder][:lon]}"
   # create path to GET info
-  path = "directions/driving/#{coordinates}?key=#{LOCATION_IQ_KEY}&alternatives=false&geometries=geojson&overview=full"
+  task = "directions/driving/#{coordinates}"
+  query = {key: LOCATION_IQ_KEY,
+           alternatives: false,
+           geometries: "geojson",
+           overview: "full"}
   sleep(0.5)
-  HTTParty.get(BASE_URL + path)
+  response = HTTParty.get(BASE_URL + task, query: query)
+  return response.parsed_response
 end
 
 # Optional #2:
 # Turn these locations into the names of places: [{ lat: 38.8976998, lon: -77.0365534886228}, {lat: 48.4283182, lon: -123.3649533 }, { lat: 41.8902614, lon: 12.493087103595503}]
 # make a helper function
 def reverse_location(lat, lon)
-  query_param = {}
-  path = "reverse.php?key=#{LOCATION_IQ_KEY}&lat=#{lat}&lon=#{lon}&format=json"
-  response = HTTParty.get(BASE_URL + path)
+  task = "reverse.php"
+  query = {key: LOCATION_IQ_KEY,
+           lat: lat,
+           lon: lon,
+           format: "json"}
+  response = HTTParty.get(BASE_URL + task, query: query)
 
   response.parsed_response["display_name"]
 end
